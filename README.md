@@ -59,3 +59,11 @@ Reply
   }
 }
 ```
+
+- DeleteUser (GET)
+`http://localhost:8081/auth/{id}` Id in Params!
+
+```
+Example:- 
+http://localhost:8081/auth/678c32a72fc7880114202fee
+```

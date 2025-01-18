@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"encoding/json"
+
 	// "fmt"
 	"net/http"
 	"strings"
@@ -11,6 +12,7 @@ import (
 	"github.com/RG-7/m-backend/database"
 	"github.com/RG-7/m-backend/helpers"
 	"github.com/RG-7/m-backend/models"
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
@@ -115,6 +117,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// vlaidate token
 func ValidateToken(w http.ResponseWriter, r *http.Request) {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
@@ -146,4 +149,43 @@ func ValidateToken(w http.ResponseWriter, r *http.Request) {
 		"msg":  "Token is valid",
 		"user": user,
 	})
+}
+
+// delete user
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	// Extract ID from URL path
+	vars := mux.Vars(r)
+	id := vars["id"] // URL should be /users/{id}
+
+	if id == "" {
+		http.Error(w, "User ID is required", http.StatusBadRequest)
+		return
+	}
+
+	// Convert ID to MongoDB ObjectID
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		http.Error(w, "Invalid User ID", http.StatusBadRequest)
+		return
+	}
+
+	// Connect to MongoDB and delete the user
+	collection := database.Client.Database("ttms").Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	result, err := collection.DeleteOne(ctx, bson.M{"_id": objID})
+	if err != nil {
+		http.Error(w, "Failed to delete user: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Check if a user was actually deleted
+	if result.DeletedCount == 0 {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("User deleted successfully"))
 }
