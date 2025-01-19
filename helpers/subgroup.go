@@ -7,25 +7,35 @@ import (
 
 // GenerateSubgroups extracts subgroups from the given range (e.g., "1A1A-1A1E").
 func GenerateSubgroups(subgroupRange string) []string {
-	parts := strings.Split(subgroupRange, "-")
-	if len(parts) != 2 {
-		return nil
+	// Check if the range contains a hyphen indicating a range
+	if strings.Contains(subgroupRange, "-") {
+		parts := strings.Split(subgroupRange, "-")
+		if len(parts) != 2 {
+			// Return an empty slice if the range is invalid
+			return []string{}
+		}
+
+		// Extract prefix and range letters
+		prefix := parts[0][:len(parts[0])-1] // Assuming the prefix is everything except the last letter
+		startLetter := parts[0][len(parts[0])-1]
+		endLetter := parts[1][len(parts[1])-1]
+
+		// Ensure start letter is not greater than end letter
+		if startLetter > endLetter {
+			return []string{}
+		}
+
+		// Generate subgroups for the range
+		subgroups := []string{}
+		for c := startLetter; c <= endLetter; c++ {
+			subgroups = append(subgroups, prefix+string(c))
+		}
+
+		return subgroups
 	}
 
-	prefix := parts[0][:3]
-	startLetter := parts[0][3]
-	endLetter := parts[1][3]
-
-	if startLetter > endLetter {
-		return nil
-	}
-
-	subgroups := []string{}
-	for c := startLetter; c <= endLetter; c++ {
-		subgroups = append(subgroups, prefix+string(c))
-	}
-
-	return subgroups
+	// If the range does not contain a hyphen, it's a single subgroup, so return it as a list
+	return []string{subgroupRange}
 }
 
 // ParseDayOfWeek converts a string day to a time.Weekday.
@@ -50,11 +60,6 @@ func ParseDayOfWeek(day string) time.Weekday {
 	}
 }
 
-// Function to parse date
-func parseDate(dateStr string) (time.Time, error) {
-	layout := "2006-01-02"
-	return time.Parse(layout, dateStr)
-}
 
 // GetDuration returns the duration based on session type.
 func GetDuration(sessionType string) int {
