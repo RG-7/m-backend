@@ -98,7 +98,7 @@ http://localhost:8081/auth/678c32a72fc7880114202fee
 }
 ```
 
-- Delete Lectures for a subgroup of similar range i.e.  or Single also i.e. (2INSQW) (1Q1A-1Q1E) (POST)
+- Delete Lectures for a subgroup of similar range (1Q1A-1Q1E)  i.e.  or Single also i.e. (2INSQW) (POST)
   `http://localhost:8081/tt/linrangedel`
 
 ```
