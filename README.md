@@ -6,6 +6,7 @@
 {
   "email": "john.doe@example.com",
   "password": "hashedPassword123", 
+  "name":"Jhon",
   "role": "faculty",
   "mobileno": "1234567890",
   "employeeId": "EMP12345",
@@ -47,6 +48,7 @@ Reply
   "user": {
     "id": "678c32a72fc7880114202fee",
     "email": "john.doe@example.com",
+    "name":"Jhon"
     "password": "$2a$10$39SQPKga97dh1uceIcxXieFk96Tdz0s13FYKFmI09DA88B9GDQ0.m",
     "role": "faculty",
     "mobileno": "1234567890",
@@ -59,6 +61,10 @@ Reply
   }
 }
 ```
+
+- GetAllUser (GET)
+`http://localhost:8081/auth/all`
+
 
 - DeleteUser (GET)
 `http://localhost:8081/auth/{id}` Id in Params!

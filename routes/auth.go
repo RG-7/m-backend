@@ -9,5 +9,6 @@ func AuthRoutes(router *mux.Router) {
 	router.HandleFunc("/auth/register", controllers.Register).Methods("POST")
 	router.HandleFunc("/auth/login", controllers.Login).Methods("POST")
 	router.HandleFunc("/auth/validate", controllers.ValidateToken).Methods("GET")
+	router.HandleFunc("/auth/all", controllers.GetAllUsers).Methods("GET")
 	router.HandleFunc("/auth/{id}", controllers.DeleteUser).Methods("GET")
 }

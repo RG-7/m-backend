@@ -3,6 +3,8 @@ package controllers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"log"
 
 	// "fmt"
 	"net/http"
@@ -15,6 +17,7 @@ import (
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	// "go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -80,10 +83,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// decode the requrest body into the cred struct
 	err := json.NewDecoder(r.Body).Decode(&Credentials)
+
+	fmt.Printf("%s", Credentials.Email)
+	fmt.Printf("%s", Credentials.Password)
+
 	if err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
+
+	print("Herr...... at step 1")
 
 	// step 2: find user by email
 	collection := database.Client.Database("ttms").Collection("users")
@@ -97,12 +106,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	print("Herr...... at step 2")
+
 	//step 3:
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(Credentials.Password))
 	if err != nil {
 		http.Error(w, "Incorrect Password!", http.StatusUnauthorized)
 		return
 	}
+
+	print("Herr...... at step 3")
 
 	// step 4: create jwt token
 	token, err := helpers.GenerateJWT(user)
@@ -186,6 +199,47 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	print("Herr...... at step 4")
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("User deleted successfully"))
+}
+
+
+// GetAllUsers handles fetching all users from the database
+func GetAllUsers(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+
+    collection := database.Client.Database("ttms").Collection("users")
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    cursor, err := collection.Find(ctx, bson.M{})
+    if err != nil {
+        log.Println("Error fetching users:", err) // Log the error to identify the issue
+        http.Error(w, "Failed to fetch users: "+err.Error(), http.StatusInternalServerError)
+        return
+    }
+    defer cursor.Close(ctx)
+
+    var users []map[string]interface{}
+    for cursor.Next(ctx) {
+        var user map[string]interface{}
+        if err := cursor.Decode(&user); err != nil {
+            log.Println("Error decoding user:", err) // Log decoding errors
+            http.Error(w, "Failed to decode user", http.StatusInternalServerError)
+            return
+        }
+        users = append(users, user)
+    }
+
+    if err := cursor.Err(); err != nil {
+        log.Println("Cursor iteration error:", err) // Log cursor iteration errors
+        http.Error(w, "Failed to iterate over users: "+err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    log.Println("Fetched users successfully:", users) // Log the fetched users for debugging
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode(map[string]interface{}{"users": users})
 }
