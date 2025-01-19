@@ -6,4 +6,5 @@ import (
 
 func RegisterRoutes(router *mux.Router){
 	AuthRoutes(router)
+	TTRoutes(router)
 }

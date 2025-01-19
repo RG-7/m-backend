@@ -1,11 +1,12 @@
 # Managenment Backend API's
 
 - Create User (POST)
-`http://localhost:8081/auth/register`
+  `http://localhost:8081/auth/register`
+
 ```
 {
   "email": "john.doe@example.com",
-  "password": "hashedPassword123", 
+  "password": "hashedPassword123",
   "name":"Jhon",
   "role": "faculty",
   "mobileno": "1234567890",
@@ -19,15 +20,17 @@
 ```
 
 - Login User (POST)
-`http://localhost:8081/auth/login`
+  `http://localhost:8081/auth/login`
+
 ```
 {
   "email": "john.doe@example.com",
   "password": "hashedPassword123"
 }
 ```
+
 ```
-Reply :- 
+Reply :-
 
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzhjMzJhNzJmYzc4ODAxMTQyMDJmZWUiLCJleHAiOjE3MzkwNDEyODgsImlhdCI6MTczNzI0MTI4OH0.0qk2yd_S4AHjFYbma6FDSEigfNBq7B-Dsh1uxdwI_9o"
@@ -35,13 +38,16 @@ Reply :-
 ```
 
 - Verify token (GET)
-`http://localhost:8081/auth/validate`
-Header Format
+  `http://localhost:8081/auth/validate`
+  Header Format
+
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzhjMzJhNzJmYzc4ODAxMTQyMDJmZWUiLCJleHAiOjE3MzkwNDEyODgsImlhdCI6MTczNzI0MTI4OH0.0qk2yd_S4AHjFYbma6FDSEigfNBq7B-Dsh1uxdwI_9o
 
 ```
+
 Reply
+
 ```
 {
   "msg": "Token is valid",
@@ -63,13 +69,50 @@ Reply
 ```
 
 - GetAllUser (GET)
-`http://localhost:8081/auth/all`
-
+  `http://localhost:8081/auth/all`
 
 - DeleteUser (GET)
-`http://localhost:8081/auth/{id}` Id in Params!
+  `http://localhost:8081/auth/{id}` Id in Params!
 
 ```
-Example:- 
+Example:-
 http://localhost:8081/auth/678c32a72fc7880114202fee
+```
+
+- Add Lectures for a subgroup of similar range i.e. (1Q1A-1Q1E) (POST)
+  `http://localhost:8081/tt/linrange`
+
+```
+{
+  "courseCode": "UCS550",
+  "courseName": "Network Defense",
+  "facultyCode": "RPN",
+  "venue": "LT-401",
+  "subgroup": "1Q1A-1Q1E",
+  "department": "Computer Science & Engineering",
+  "startDate": "2025-01-06",
+  "endDate": "2025-05-18",
+  "day": "Monday",
+  "time": "08:00 AM",
+  "type": "l"
+}
+```
+
+- Delete Lectures for a subgroup of similar range i.e. (1Q1A-1Q1E) (POST)
+  `http://localhost:8081/tt/linrangedel`
+
+```
+{
+  "courseCode": "UCS550",
+  "courseName": "Network Defense",
+  "facultyCode": "RPN",
+  "venue": "LT-401",
+  "subgroup": "1Q1A-1Q1E",
+  "department": "Computer Science & Engineering",
+  "startDate": "2025-01-06",
+  "endDate": "2025-05-18",
+  "day": "Monday",
+  "time": "08:00 AM",
+  "type": "l"
+}
 ```
