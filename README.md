@@ -116,3 +116,40 @@ http://localhost:8081/auth/678c32a72fc7880114202fee
   "type": "l"
 }
 ```
+
+- Add Lecture/Practical/Tutorial with commonsubject and subgrous 
+`http://localhost:8081/tt/c`
+```
+{
+  "courseCode": "UCS550",
+  "courseName": "Network Defense",
+  "facultyCode": "RPN",
+  "venue": "LT-401",
+  "subgroup": ["3Q2E","3Q2D","3C2A","3M2C"],
+  "department": "Computer Science & Engineering",
+  "startDate": "2025-01-06",
+  "endDate": "2025-05-18",
+  "day": "Friday",
+  "time": "11:20 AM",
+  "type": "p"
+}
+```
+
+
+- Delete Lecture/Practical/Tutorial with commonsubject and subgrous 
+`http://localhost:8081/tt/cdel`
+```
+{
+  "courseCode": "UCS550",
+  "courseName": "Network Defense",
+  "facultyCode": "RPN",
+  "venue": "LT-401",
+  "subgroup": ["3Q2E","3Q2D","3C2A","3M2C"],
+  "department": "Computer Science & Engineering",
+  "startDate": "2025-01-06",
+  "endDate": "2025-05-18",
+  "day": "Friday",
+  "time": "11:20 AM",
+  "type": "p"
+}
+```

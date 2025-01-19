@@ -14,19 +14,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Function to parse date
-func parseDate(dateStr string) (time.Time, error) {
-	layout := "2006-01-02"
-	return time.Parse(layout, dateStr)
-}
-
 // Function to generate timetable entries for each occurrence of the day between start and end date
 func generateTimetableEntries(tt models.TimetableRequest) ([]interface{}, error) {
-	startDate, err := parseDate(tt.StartDate)
+	startDate, err := helpers.ParseDate(tt.StartDate)
 	if err != nil {
 		return nil, err
 	}
-	endDate, err := parseDate(tt.EndDate)
+	endDate, err := helpers.ParseDate(tt.EndDate)
 	if err != nil {
 		return nil, err
 	}
@@ -160,12 +154,12 @@ func DeleteTimetableEntry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse the start and end dates
-	startDate, err := parseDate(tt.StartDate)
+	startDate, err := helpers.ParseDate(tt.StartDate)
 	if err != nil {
 		http.Error(w, "Invalid start date", http.StatusBadRequest)
 		return
 	}
-	endDate, err := parseDate(tt.EndDate)
+	endDate, err := helpers.ParseDate(tt.EndDate)
 	if err != nil {
 		http.Error(w, "Invalid end date", http.StatusBadRequest)
 		return

@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+
+// Function to parse date
+func ParseDate(dateStr string) (time.Time, error) {
+	layout := "2006-01-02"
+	return time.Parse(layout, dateStr)
+}
+
+
 // GenerateSubgroups extracts subgroups from the given range (e.g., "1A1A-1A1E").
 func GenerateSubgroups(subgroupRange string) []string {
 	// Check if the range contains a hyphen indicating a range
