@@ -140,7 +140,7 @@ http://localhost:8081/auth/678c32a72fc7880114202fee
 `http://localhost:8081/tt/cdel`
 ```
 {
-  "courseCode": "UCS550",
+  "courseCode": "UTA024",
   "courseName": "Network Defense",
   "facultyCode": "RPN",
   "venue": "LT-401",
