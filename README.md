@@ -5,17 +5,17 @@
 
 ```
 {
-  "email": "john.doe@example.com",
+  "email": "john.doe@example.com", 
   "password": "hashedPassword123",
-  "name":"Jhon",
+  "name":"Jhon", 
   "role": "faculty",
   "mobileno": "1234567890",
   "employeeId": "EMP12345",
-  "facultyCode": "F12345",
+  "facultyCode": " ",
   "department": "Computer Science",
   "departmentCode": "CS01",
   "designation": "Professor",
-  "availability": "M-F 9AM-12PM"
+  "availability": " "
 }
 ```
 
