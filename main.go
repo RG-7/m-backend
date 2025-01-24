@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func main() {
 	log.Println("🚀 Starting Backend Server...")
 	// load config
 	cfg := config.LoadConfig()
