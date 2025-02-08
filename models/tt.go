@@ -28,5 +28,6 @@ type TimetableEntry struct {
 	Date        string    `bson:"date"`
 	Duration    int       `bson:"duration"`
 	Type        string    `bson:"type"`
+	FacultyName string    `bson:"facultyName"`
 	CreatedAt   time.Time `bson:"createdAt"`
 }

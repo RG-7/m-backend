@@ -117,6 +117,7 @@ http://localhost:8081/auth/678c32a72fc7880114202fee
 }
 ```
 
+-------------------------------- COmmon -------------------------------------
 - Add Lecture/Practical/Tutorial with commonsubject and subgrous 
 `http://localhost:8081/tt/c`
 ```
@@ -153,3 +154,68 @@ http://localhost:8081/auth/678c32a72fc7880114202fee
   "type": "p"
 }
 ```
+
+--------------------------------- Get Timetable ----------------------------------
+- Get timetable by subgroup & Date 
+```http://localhost:8081/tt/subgroup/1A1A/2025-01-06```
+Reply
+`
+[
+  {
+    "ID": "678d47f2c3d7b70149d739c8",
+    "CourseCode": "UHU003",
+    "CourseName": " ",
+    "FacultyCode": "KBJ",
+    "Venue": "LP-101",
+    "Subgroup": "1A1A",
+    "Department": " ",
+    "Time": "09:40 AM",
+    "Date": "2025-01-06",
+    "Duration": 50,
+    "Type": "L",
+    "CreatedAt": "2025-01-19T18:44:02.384Z"
+  },
+  {
+    "ID": "678d4837c3d7b70149d73a73",
+    "CourseCode": "UMA023",
+    "CourseName": " ",
+    "FacultyCode": "ARM",
+    "Venue": "LP-101",
+    "Subgroup": "1A1A",
+    "Department": " ",
+    "Time": "10:30 AM",
+    "Date": "2025-01-06",
+    "Duration": 50,
+    "Type": "L",
+    "CreatedAt": "2025-01-19T18:45:11.732Z"
+  },
+  {
+    "ID": "678d48b7c3d7b70149d73b44",
+    "CourseCode": "UES102",
+    "CourseName": " ",
+    "FacultyCode": "RTK",
+    "Venue": "W/SHOP",
+    "Subgroup": "1A1A",
+    "Department": " ",
+    "Time": "01:50 PM",
+    "Date": "2025-01-06",
+    "Duration": 100,
+    "Type": "P",
+    "CreatedAt": "2025-01-19T18:47:19.147Z"
+  },
+  {
+    "ID": "678d49edc3d7b70149d73c28",
+    "CourseCode": "UES101",
+    "CourseName": " ",
+    "FacultyCode": "NK",
+    "Venue": "F-302",
+    "Subgroup": "1A1A",
+    "Department": " ",
+    "Time": "03:30 PM",
+    "Date": "2025-01-06",
+    "Duration": 50,
+    "Type": "T",
+    "CreatedAt": "2025-01-19T18:52:29.058Z"
+  }
+]
+`

@@ -10,8 +10,10 @@ import (
 	"github.com/RG-7/m-backend/database"
 	"github.com/RG-7/m-backend/helpers"
 	"github.com/RG-7/m-backend/models"
+	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Function to generate timetable entries for each occurrence of the day between start and end date
@@ -258,4 +260,134 @@ func DeleteTimetableEntry(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{
 		"message": "Timetable entries deleted successfully",
 	})
+}
+
+/*
+// get timetable by subgroup
+func GetTimetableBySubgroup(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	subgroup := mux.Vars(r)["subgroup"]
+	date := mux.Vars(r)["date"]
+
+	filter := bson.M{"subgroup": subgroup, "date": date}
+
+	subgroupCollection := database.Client.Database("ttms").Collection("subgroupTT")
+	cursor, err := subgroupCollection.Find(context.TODO(), filter)
+	if err != nil {
+		http.Error(w, "Failed to fetch timetable entries", http.StatusInternalServerError)
+		return
+	}
+	defer cursor.Close(context.Background())
+
+	var entries []models.TimetableEntry
+	for cursor.Next(context.Background()) {
+		var entry models.TimetableEntry
+		cursor.Decode(&entry)
+		entries = append(entries, entry)
+	}
+
+	json.NewEncoder(w).Encode(entries)
+}
+*/
+
+func GetTimetableBySubgroup(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+
+    subgroup := mux.Vars(r)["subgroup"]
+    date := mux.Vars(r)["date"]
+
+    filter := bson.M{"subgroup": subgroup, "date": date}
+
+    subgroupCollection := database.Client.Database("ttms").Collection("subgroupTT")
+    cursor, err := subgroupCollection.Find(context.TODO(), filter)
+    if err != nil {
+        http.Error(w, "Failed to fetch timetable entries", http.StatusInternalServerError)
+        return
+    }
+    defer cursor.Close(context.Background())
+
+    var entries []models.TimetableEntry
+    for cursor.Next(context.Background()) {
+        var entry models.TimetableEntry
+        cursor.Decode(&entry)
+
+        // Fetch the faculty name from the users collection
+        userCollection := database.Client.Database("ttms").Collection("users")
+        var user models.User
+        userFilter := bson.M{"facultyCode": entry.FacultyCode}
+        err := userCollection.FindOne(context.TODO(), userFilter).Decode(&user)
+        if err != nil {
+            if err == mongo.ErrNoDocuments {
+                log.Printf("No user found with facultyCode: %s", entry.FacultyCode)
+                entry.FacultyName = "Unknown" // or handle it as needed
+            } else {
+                log.Printf("Error fetching faculty name: %v", err)
+                http.Error(w, "Failed to fetch faculty name", http.StatusInternalServerError)
+                return
+            }
+        } else {
+            // Append the faculty name to the timetable entry
+            entry.FacultyName = user.Name
+        }
+
+        entries = append(entries, entry)
+    }
+
+    json.NewEncoder(w).Encode(entries)
+}
+
+
+// get timetable by faculty
+func GetTimetableByFaculty(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	facultyCode := mux.Vars(r)["facultyCode"]
+	date := mux.Vars(r)["date"]
+
+	filter := bson.M{"facultyCode": facultyCode, "date": date}
+
+	facultyCollection := database.Client.Database("ttms").Collection("facultyTT")
+	cursor, err := facultyCollection.Find(context.TODO(), filter)
+	if err != nil {
+		http.Error(w, "Failed to fetch timetable entries", http.StatusInternalServerError)
+		return
+	}
+	defer cursor.Close(context.Background())
+
+	var entries []models.TimetableEntry
+	for cursor.Next(context.Background()) {
+		var entry models.TimetableEntry
+		cursor.Decode(&entry)
+		entries = append(entries, entry)
+	}
+
+	json.NewEncoder(w).Encode(entries)
+}
+
+// get timetable by room
+func GetTimetableByRoom(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	room := mux.Vars(r)["room"]
+	date := mux.Vars(r)["date"]
+
+	filter := bson.M{"venue": room, "date": date}
+
+	roomCollection := database.Client.Database("ttms").Collection("roomsTT")
+	cursor, err := roomCollection.Find(context.TODO(), filter)
+	if err != nil {
+		http.Error(w, "Failed to fetch timetable entries", http.StatusInternalServerError)
+		return
+	}
+	defer cursor.Close(context.Background())
+
+	var entries []models.TimetableEntry
+	for cursor.Next(context.Background()) {
+		var entry models.TimetableEntry
+		cursor.Decode(&entry)
+		entries = append(entries, entry)
+	}
+
+	json.NewEncoder(w).Encode(entries)
 }
