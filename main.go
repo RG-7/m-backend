@@ -29,7 +29,7 @@ func main() {
 	// get port
 	port := cfg.Port
 	if port == "" {
-		port = "8081"
+		port = "10000"
 	}
 
 	// Start server
