@@ -20,9 +20,21 @@ func LoadConfig() Config {
 		log.Println("⚠️ Skipping .env loading, using Render-provided env vars")
 	}
 
+	mongoURI := os.Getenv("MONGODB_URI")
+	port := os.Getenv("PORT")
+	secret := os.Getenv("SECRET_KEY")
+
+	// Fail fast if critical env vars are missing
+	if mongoURI == "" {
+		log.Fatal("❌ MONGODB_URI is not set!")
+	}
+	if secret == "" {
+		log.Fatal("❌ SECRET_KEY is not set!")
+	}
+
 	return Config{
-		MongoURI:   os.Getenv("MONGODB_URI"),
-		Port:       os.Getenv("PORT"),
-		SECRET_KEY: os.Getenv("SECRET_KEY"),
+		MongoURI:   mongoURI,
+		Port:       port,
+		SECRET_KEY: secret,
 	}
 }
