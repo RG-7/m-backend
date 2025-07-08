@@ -18,15 +18,21 @@ import (
 
 var SECRET_KEY []byte
 
+func SetSecret(secret string) {
+	SECRET_KEY = []byte(secret)
+}
+
 // Initialize the environment variables
 func InitConfig() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file!")
+	// Try loading .env file (only useful for local dev)
+	if err := godotenv.Load(); err != nil {
+		log.Println("✅ No .env file found (expected in production)")
 	}
+
+	// Get SECRET_KEY from environment
 	secret := os.Getenv("SECRET_KEY")
 	if secret == "" {
-		log.Fatal("SECRET_KEY not found in environment variables!")
+		log.Fatal("❌ SECRET_KEY not found in environment variables!")
 	}
 	SECRET_KEY = []byte(secret)
 }
@@ -55,41 +61,41 @@ func GenerateJWT(user models.User) (string, error) {
 }
 
 func VerifyToken(tokenString string) (models.User, error) {
-    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-        return SECRET_KEY, nil
-    })
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return SECRET_KEY, nil
+	})
 
-    if err != nil || !token.Valid {
-        return models.User{}, errors.New("invalid token")
-    }
+	if err != nil || !token.Valid {
+		return models.User{}, errors.New("invalid token")
+	}
 
-    claims, ok := token.Claims.(jwt.MapClaims)
-    if !ok {
-        return models.User{}, errors.New("invalid token claims")
-    }
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return models.User{}, errors.New("invalid token claims")
+	}
 
-    userID, ok := claims["sub"].(string)
-    if !ok {
-        return models.User{}, errors.New("invalid user ID in token")
-    }
+	userID, ok := claims["sub"].(string)
+	if !ok {
+		return models.User{}, errors.New("invalid user ID in token")
+	}
 
-   // fmt.Println("User ID from token:", userID)  // 🔍 Debug log
+	// fmt.Println("User ID from token:", userID)  // 🔍 Debug log
 
-    // Fetch user from database
-    collection := database.Client.Database("ttms").Collection("users")
-    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-    defer cancel()
+	// Fetch user from database
+	collection := database.Client.Database("ttms").Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
-    var user models.User
-    objID, err := primitive.ObjectIDFromHex(userID)
-    if err != nil {
-        return models.User{}, errors.New("invalid user ID format")
-    }
+	var user models.User
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return models.User{}, errors.New("invalid user ID format")
+	}
 
-    err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&user)
-    if err != nil {
-        return models.User{}, errors.New("user not found")
-    }
+	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&user)
+	if err != nil {
+		return models.User{}, errors.New("user not found")
+	}
 
-    return user, nil
+	return user, nil
 }

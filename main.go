@@ -15,6 +15,7 @@ func main() {
 	log.Println("🚀 Starting Backend Server...")
 	// load config
 	cfg := config.LoadConfig()
+	helpers.SetSecret(cfg.SECRET_KEY)
 	helpers.InitConfig()
 
 	// connect to database
